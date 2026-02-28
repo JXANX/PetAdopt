@@ -3,12 +3,16 @@ import sequelize from '../config/database';
 import Pet from './Pet';
 import User from './User';
 
+/**
+ * Modelo que vincula a un Usuario con una Mascota mediante una solicitud.
+ * Aquí guardamos el historial y estado de cada proceso de adopción.
+ */
 class AdoptionRequest extends Model {
     public id!: number;
     public petId!: number;
     public userId!: number;
     public message!: string;
-    public status!: string; // 'pending' | 'approved' | 'rejected'
+    public status!: string; // 'pending' (espera), 'approved' (aprobada), 'rejected' (rechazada)
     public requestDate!: Date;
     public responseDate!: Date;
 }
@@ -38,7 +42,7 @@ AdoptionRequest.init(
         },
         message: {
             type: DataTypes.TEXT,
-            allowNull: true,
+            allowNull: true, // El usuario puede dejar un mensaje explicando por qué quiere adoptar
         },
         status: {
             type: DataTypes.ENUM('pending', 'approved', 'rejected'),
@@ -51,7 +55,7 @@ AdoptionRequest.init(
         },
         responseDate: {
             type: DataTypes.DATE,
-            allowNull: true,
+            allowNull: true, // Fecha en la que el admin dio una respuesta
         },
     },
     {
@@ -60,10 +64,12 @@ AdoptionRequest.init(
     }
 );
 
-// Associations
+// Definición de Relaciones (Associations)
+// Una mascota puede tener muchas solicitudes, pero una solicitud pertenece a una mascota
 Pet.hasMany(AdoptionRequest, { foreignKey: 'petId' });
 AdoptionRequest.belongsTo(Pet, { foreignKey: 'petId' });
 
+// Un usuario puede realizar muchas solicitudes
 User.hasMany(AdoptionRequest, { foreignKey: 'userId' });
 AdoptionRequest.belongsTo(User, { foreignKey: 'userId' });
 

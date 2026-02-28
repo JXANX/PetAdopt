@@ -48,6 +48,26 @@
         </div>
     </div>
 
+    <!-- Modal para Solicitud de Adopción -->
+    <div id="adoptModal" class="modal">
+        <div class="modal-content">
+            <span class="close-adopt-modal" style="float: right; cursor: pointer; font-size: 1.5rem;">&times;</span>
+            <h2>Solicitar Adopción 🐾</h2>
+            <p style="margin: 1rem 0;">Cuéntanos por qué serías el hogar ideal para esta mascota.</p>
+            <form id="adoptForm">
+                <div class="form-group">
+                    <label for="adoptMessage">Mensaje para el refugio</label>
+                    <textarea id="adoptMessage" rows="4"
+                        placeholder="Ej: Tengo un gran patio y experiencia con esta raza..." required></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" id="cancelAdopt" class="btn btn-outline">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="js/pets.js"></script>
 </body>
 
