@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Adopta un Amigo 🐾</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav>
+        <a href="dashboard.html" class="logo"><span>🐾</span> Adopta un Amigo</a>
+        <div class="nav-links">
+            <a href="dashboard.html">Inicio</a>
+            <a href="pets.html">Mascotas</a>
+            <a href="adoptions.html">Solicitudes</a>
+            <a href="profile.html">Mi Perfil</a>
+            <button id="logoutBtn" class="btn btn-outline">Salir</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="margin-bottom: 2.5rem;">
+            <h1 id="welcomeTitle">Cargando...</h1>
+            <p color="var(--text-muted)">Aquí tienes un resumen de lo que está pasando hoy.</p>
+        </header>
+
+        <section class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <h3>Total Mascotas</h3>
+                <div class="value" id="stat-total">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Disponibles</h3>
+                <div class="value" id="stat-available">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Adoptadas</h3>
+                <div class="value" id="stat-adopted">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pendientes</h3>
+                <div class="value" id="stat-pending">-</div>
+            </div>
+        </section>
+
+        <h2>Acciones Rápidas</h2>
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <a href="pet-form.html" class="btn btn-primary">➕ Agregar Mascota</a>
+            <a href="pets.html" class="btn btn-outline"
+                style="background: white; border-color: #e5e7eb; color: var(--text);">🔍 Ver Catálogo</a>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitudes - Adopta un Amigo 🐾</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav>
+        <a href="dashboard.html" class="logo"><span>🐾</span> Adopta un Amigo</a>
+        <div class="nav-links">
+            <a href="dashboard.html">Inicio</a>
+            <a href="pets.html">Mascotas</a>
+            <a href="adoptions.html">Solicitudes</a>
+            <a href="profile.html">Mi Perfil</a>
+            <button id="logoutBtn" class="btn btn-outline">Salir</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="margin-bottom: 2.5rem;">
+            <h1>Solicitudes de Adopción 📄</h1>
+            <p color="var(--text-muted)">Gestiona las peticiones de las personas que quieren adoptar.</p>
+        </header>
+
+        <div style="margin-bottom: 1.5rem; display: flex; justify-content: flex-end;">
+            <button id="batchProcessBtn" class="btn btn-primary" style="background: var(--secondary);">Procesar Cambios
+                ✅</button>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Mascota</th>
+                    <th>Interesado</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="adoptionTableBody">
+                <!-- Cargando... -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="js/adoptions.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mascota - Adopta un Amigo 🐾</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav>
+        <a href="dashboard.html" class="logo"><span>🐾</span> Adopta un Amigo</a>
+        <div class="nav-links">
+            <a href="dashboard.html">Inicio</a>
+            <a href="pets.html">Mascotas</a>
+            <a href="adoptions.html">Solicitudes</a>
+            <a href="profile.html">Mi Perfil</a>
+            <button id="logoutBtn" class="btn btn-outline">Salir</button>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 600px;">
+        <header style="margin-bottom: 2rem;">
+            <h1 id="formTitle">Agregar Mascota 🐾</h1>
+            <p color="var(--text-muted)">Completa los datos para dar de alta una nueva mascota.</p>
+        </header>
+
+        <form id="petForm" class="auth-card" style="max-width: none; text-align: left; padding: 2rem;">
+            <div class="form-group">
+                <label for="name">Nombre</label>
+                <input type="text" id="name" placeholder="Ej. Max" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="species">Especie</label>
+                    <select id="species" required>
+                        <option value="perro">Perro</option>
+                        <option value="gato">Gato</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="age">Edad (años)</label>
+                    <input type="number" id="age" value="1" min="0" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="breed">Raza</label>
+                <input type="text" id="breed" placeholder="Ej. Golden Retriever">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" rows="3" placeholder="Cuéntanos un poco sobre su personalidad..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Foto</label>
+                <input type="file" id="photo" accept="image/*">
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <a href="pets.html" class="btn btn-outline" style="flex: 1;">Cancelar</a>
+                <button type="submit" class="btn btn-primary" style="flex: 2;">Guardar Mascota</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/pet-form.js"></script>
+</body>
+
+</html>

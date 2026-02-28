@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mascotas - Adopta un Amigo 🐾</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav>
+        <a href="dashboard.html" class="logo"><span>🐾</span> Adopta un Amigo</a>
+        <div class="nav-links">
+            <a href="dashboard.html">Inicio</a>
+            <a href="pets.html">Mascotas</a>
+            <a href="adoptions.html">Solicitudes</a>
+            <a href="profile.html">Mi Perfil</a>
+            <button id="logoutBtn" class="btn btn-outline">Salir</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+            <div>
+                <h1>Nuestros Amigos 🐾</h1>
+                <p color="var(--text-muted)">Encuentra a la mascota perfecta para tu hogar.</p>
+            </div>
+            <a href="pet-form.html" class="btn btn-primary">➕ Nueva Mascota</a>
+        </header>
+
+        <div class="pet-grid" id="petGrid">
+            <!-- Cargando... -->
+        </div>
+    </div>
+
+    <!-- Modal para Confirmar Eliminación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>¿Estás seguro?</h2>
+            <p style="margin: 1.5rem 0;">Esta acción no se puede deshacer. Se eliminará permanentemente la mascota del
+                sistema.</p>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button id="cancelDelete" class="btn btn-outline">Cancelar</button>
+                <button id="confirmDelete" class="btn btn-primary" style="background: var(--danger);">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/pets.js"></script>
+</body>
+
+</html>
