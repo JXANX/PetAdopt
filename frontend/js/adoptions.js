@@ -52,8 +52,8 @@ async function fetchAdoptions() {
             const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${adoption.pet?.name || "—"}</td>
-                <td>${adoption.user?.username || "—"}</td>
+                <td>${adoption.Pet?.name || "—"}</td>
+                <td>${adoption.User?.username || "—"}</td>
                 <td>${new Date(adoption.createdAt).toLocaleDateString()}</td>
                 <td>${adoption.status}</td>
                 <td>
