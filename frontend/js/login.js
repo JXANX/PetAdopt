@@ -10,7 +10,7 @@ loginForm.addEventListener('submit', async (e) => {
 
     try {
 
-        const response = await fetch(`${API_BASE}/login`, {
+        const response = await fetch(`${API_URL}/login`, {
 
             method: 'POST',
 
