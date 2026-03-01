@@ -1,15 +1,15 @@
-// Validación de sesión
+// Validar sesión
 const token = localStorage.getItem('token');
 
 if (!token)
     window.location.href = 'login.html';
 
-// usar config.js
-const API_URL = API_BASE;
 
-const tableBody = document.getElementById('adoptionTableBody');
+// usar config.js correctamente
+const API_URL = CONFIG.API_URL;
 
-let pendingChanges = {};
+
+const adoptionTable = document.getElementById("adoptionTable");
 
 
 // cargar solicitudes
@@ -18,56 +18,53 @@ async function fetchAdoptions() {
     try {
 
         const response = await fetch(`${API_URL}/adoptions`, {
-
             headers: {
-                'Authorization': `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             }
-
         });
+
+        if (!response.ok)
+            throw new Error("Error al cargar solicitudes");
 
         const adoptions = await response.json();
 
-        tableBody.innerHTML = '';
+        adoptionTable.innerHTML = "";
 
         if (adoptions.length === 0) {
 
-            tableBody.innerHTML =
-                '<tr><td colspan="5">No hay solicitudes</td></tr>';
+            adoptionTable.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align:center;padding:2rem;">
+                        No hay solicitudes pendientes 🐾
+                    </td>
+                </tr>
+            `;
 
             return;
         }
 
-        adoptions.forEach(req => {
+        adoptions.forEach(adoption => {
 
-            const row = document.createElement('tr');
+            const row = document.createElement("tr");
 
             row.innerHTML = `
-                <td>${req.Pet.name}</td>
-
-                <td>${req.User.username}</td>
-
-                <td>${new Date(req.requestDate).toLocaleDateString()}</td>
-
+                <td>${adoption.pet?.name || "—"}</td>
+                <td>${adoption.user?.username || "—"}</td>
+                <td>${adoption.message || "Sin mensaje"}</td>
+                <td>${adoption.status}</td>
                 <td>
-                    <span id="badge-${req.id}">
-                        ${req.status}
-                    </span>
-                </td>
-
-                <td>
-
-                    <button onclick="queueChange(${req.id},'approved')">
-                        Aprobar
-                    </button>
-
-                    <button onclick="queueChange(${req.id},'rejected')">
-                        Rechazar
-                    </button>
-
+                    ${adoption.status === "pending" ? `
+                        <button onclick="processAdoption(${adoption.id}, 'approved')">
+                            Aprobar
+                        </button>
+                        <button onclick="processAdoption(${adoption.id}, 'rejected')">
+                            Rechazar
+                        </button>
+                    ` : "Procesada"}
                 </td>
             `;
 
-            tableBody.appendChild(row);
+            adoptionTable.appendChild(row);
 
         });
 
@@ -75,101 +72,54 @@ async function fetchAdoptions() {
     catch (error) {
 
         console.error(error);
+        alert("Error al cargar solicitudes");
 
     }
 
 }
 
 
-// cola
-window.queueChange = (id, status) => {
 
-    pendingChanges[id] = status;
+// aprobar / rechazar
+window.processAdoption = async (id, status) => {
 
-    const badge =
-        document.getElementById(`badge-${id}`);
+    try {
 
-    badge.textContent =
-        status + "*";
+        const response = await fetch(`${API_URL}/adoptions/${id}`, {
+
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+
+            body: JSON.stringify({ status })
+
+        });
+
+        if (!response.ok)
+            throw new Error("Error al procesar");
+
+        fetchAdoptions();
+
+    }
+    catch (error) {
+
+        console.error(error);
+        alert("Error al procesar solicitud");
+
+    }
 
 };
 
 
-// procesar lote
-document
-    .getElementById('batchProcessBtn')
-    .addEventListener('click', async () => {
-
-        const requests =
-            Object.entries(pendingChanges)
-                .map(([id, status]) => ({
-
-                    id: parseInt(id),
-                    status
-
-                }));
-
-
-        if (requests.length === 0) {
-
-            alert("Sin cambios");
-
-            return;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(`${API_URL}/adoptions/batch`, {
-
-                    method: "PUT",
-
-                    headers: {
-
-                        "Content-Type": "application/json",
-
-                        "Authorization": `Bearer ${token}`
-
-                    },
-
-                    body: JSON.stringify({
-
-                        requests
-
-                    })
-
-                });
-
-
-            if (response.ok) {
-
-                alert("Guardado");
-
-                pendingChanges = {};
-
-                fetchAdoptions();
-
-            }
-
-        }
-        catch {
-
-            alert("Error");
-
-        }
-
-    });
-
 
 // logout
-document
-    .getElementById("logoutBtn")
+document.getElementById("logoutBtn")
     .addEventListener("click", () => {
 
         localStorage.clear();
-
         window.location.href = "login.html";
 
     });
