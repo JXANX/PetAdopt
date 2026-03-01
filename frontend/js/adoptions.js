@@ -58,10 +58,10 @@ async function fetchAdoptions() {
                 <td>${adoption.status}</td>
                 <td>
                     ${adoption.status === "pending" ? `
-                        <button onclick="processAdoption(${adoption.id}, 'approved')">
+                        <button class="btn btn-primary" onclick="processAdoption(${adoption.id}, 'approved')">
                             Aprobar
                         </button>
-                        <button onclick="processAdoption(${adoption.id}, 'rejected')">
+                        <button class="btn btn-danger" onclick="processAdoption(${adoption.id}, 'rejected')">
                             Rechazar
                         </button>
                     ` : "Procesada"}

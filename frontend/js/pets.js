@@ -71,13 +71,13 @@ async function fetchPets() {
                     <div class="pet-footer">
 
                         ${pet.status === "available"
-                    ? `<button onclick="requestAdoption(${pet.id},'${pet.name}')">
+                    ? `<button class="btn btn-primary" onclick="requestAdoption(${pet.id},'${pet.name}')">
                                     Adoptar 🐾
                                </button>`
                     : ""
                 }
 
-                        <button onclick="location.href='pet-form.html?id=${pet.id}'">
+                        <button class="btn btn-outline" onclick="location.href='pet-form.html?id=${pet.id}'">
                             Detalles
                         </button>
 
