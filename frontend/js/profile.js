@@ -5,15 +5,12 @@ if (!token)
     window.location.href = 'login.html';
 
 
-// usar config.js
-const API_URL = API_BASE;
+// usar config.js correctamente
+const API_URL = CONFIG.API_URL;
 
 
-const profileForm =
-    document.getElementById('profileForm');
-
-const successMsg =
-    document.getElementById('profile-success-message');
+const profileForm = document.getElementById('profileForm');
+const successMsg = document.getElementById('profile-success-message');
 
 
 
@@ -22,28 +19,15 @@ async function fetchProfile() {
     try {
 
         // MVP: usamos datos guardados localmente
-        const username =
-            localStorage.getItem('username');
+        const username = localStorage.getItem('username');
 
-
-        document
-            .getElementById('p-username')
-            .value =
-            username;
-
-
-        document
-            .getElementById('profileUsername')
-            .textContent =
-            username;
+        document.getElementById('p-username').value = username || "";
+        document.getElementById('profileUsername').textContent = username || "";
 
     }
     catch (error) {
 
-        console.error(
-            'Error fetching profile:',
-            error
-        );
+        console.error('Error fetching profile:', error);
 
     }
 
@@ -51,43 +35,31 @@ async function fetchProfile() {
 
 
 
-profileForm.addEventListener(
-    'submit',
-    async (e) => {
+profileForm.addEventListener('submit', async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
 
+    // Aquí luego puedes conectar:
+    // PUT `${API_URL}/profile`
 
-        // aquí luego puedes conectar PUT /api/profile real
-        successMsg.style.display =
-            'block';
+    successMsg.style.display = 'block';
 
+    setTimeout(() => {
+        successMsg.style.display = 'none';
+    }, 3000);
 
-        setTimeout(() => {
-
-            successMsg.style.display =
-                'none';
-
-        }, 3000);
-
-    }
-);
+});
 
 
 
 document
     .getElementById('logoutBtn')
-    .addEventListener(
-        'click',
-        () => {
+    .addEventListener('click', () => {
 
-            localStorage.clear();
+        localStorage.clear();
+        window.location.href = 'login.html';
 
-            window.location.href =
-                'login.html';
-
-        }
-    );
+    });
 
 
 

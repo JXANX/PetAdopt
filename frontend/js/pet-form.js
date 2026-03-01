@@ -4,20 +4,13 @@ if (!token)
     window.location.href = 'login.html';
 
 
-// usar config.js
-const API_URL = API_BASE;
+// usar config.js correctamente
+const API_URL = CONFIG.API_URL;
 
+const petForm = document.getElementById('petForm');
 
-const petForm =
-    document.getElementById('petForm');
-
-
-const urlParams =
-    new URLSearchParams(window.location.search);
-
-
-const petId =
-    urlParams.get('id');
+const urlParams = new URLSearchParams(window.location.search);
+const petId = urlParams.get('id');
 
 
 // modo editar
@@ -25,11 +18,9 @@ if (petId) {
 
     document
         .getElementById('formTitle')
-        .textContent =
-        'Editar Mascota 🐾';
+        .textContent = 'Editar Mascota 🐾';
 
     fetchPetData(petId);
-
 }
 
 
@@ -38,33 +29,24 @@ async function fetchPetData(id) {
 
     try {
 
-        const response =
-            await fetch(`${API_URL}/pets/${id}`);
+        const response = await fetch(`${API_URL}/pets/${id}`);
 
+        if (!response.ok)
+            throw new Error("Error al cargar mascota");
 
-        const pet =
-            await response.json();
+        const pet = await response.json();
 
-
-        document.getElementById('name')
-            .value = pet.name;
-
-        document.getElementById('species')
-            .value = pet.species;
-
-        document.getElementById('age')
-            .value = pet.age;
-
-        document.getElementById('breed')
-            .value = pet.breed || '';
-
-        document.getElementById('description')
-            .value = pet.description || '';
+        document.getElementById('name').value = pet.name;
+        document.getElementById('species').value = pet.species;
+        document.getElementById('age').value = pet.age;
+        document.getElementById('breed').value = pet.breed || '';
+        document.getElementById('description').value = pet.description || '';
 
     }
     catch (error) {
 
         console.error(error);
+        alert("Error al cargar datos");
 
     }
 
@@ -76,103 +58,48 @@ petForm.addEventListener('submit', async (e) => {
 
     e.preventDefault();
 
+    const formData = new FormData();
 
-    const formData =
-        new FormData();
+    formData.append('name', document.getElementById('name').value);
+    formData.append('species', document.getElementById('species').value);
+    formData.append('age', document.getElementById('age').value);
+    formData.append('breed', document.getElementById('breed').value);
+    formData.append('description', document.getElementById('description').value);
 
-
-    formData.append(
-        'name',
-        document.getElementById('name').value
-    );
-
-
-    formData.append(
-        'species',
-        document.getElementById('species').value
-    );
-
-
-    formData.append(
-        'age',
-        document.getElementById('age').value
-    );
-
-
-    formData.append(
-        'breed',
-        document.getElementById('breed').value
-    );
-
-
-    formData.append(
-        'description',
-        document.getElementById('description').value
-    );
-
-
-    const photo =
-        document.getElementById('photo')
-            .files[0];
-
+    const photo = document.getElementById('photo').files[0];
 
     if (photo) {
-
-        formData.append(
-            'photo',
-            photo
-        );
-
+        formData.append('photo', photo);
     }
-
 
     try {
 
-        const url =
-            petId
-                ? `${API_URL}/pets/${petId}`
-                : `${API_URL}/pets`;
+        const url = petId
+            ? `${API_URL}/pets/${petId}`
+            : `${API_URL}/pets`;
 
+        const method = petId ? "PUT" : "POST";
 
-        const method =
-            petId
-                ? "PUT"
-                : "POST";
+        const response = await fetch(url, {
+            method,
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            body: formData
+        });
 
-
-        const response =
-            await fetch(url, {
-
-                method,
-
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-
-                body: formData
-
-            });
-
-
-        if (response.ok) {
-
-            window.location.href =
-                "pets.html";
-
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message);
         }
-        else {
 
-            const err =
-                await response.json();
-
-            alert(err.message);
-
-        }
+        window.location.href = "pets.html";
 
     }
-    catch {
+    catch (error) {
 
-        alert("Error conexión");
+        console.error(error);
+        alert(error.message || "Error de conexión");
 
     }
 
@@ -185,7 +112,6 @@ document
     .addEventListener("click", () => {
 
         localStorage.clear();
-
         window.location.href = "login.html";
 
     });

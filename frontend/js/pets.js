@@ -5,35 +5,26 @@ if (!token)
     window.location.href = 'login.html';
 
 
-// usar config.js
-const API_URL = API_BASE;
+// usar config.js correctamente
+const API_URL = CONFIG.API_URL;
+const API_ROOT = CONFIG.API_BASE; // para imágenes
 
 
-// base SIN /api para imágenes
-const API_ROOT =
-    API_BASE.replace('/api', '');
-
-
-
-const petGrid =
-    document.getElementById('petGrid');
-
+const petGrid = document.getElementById('petGrid');
 
 
 async function fetchPets() {
 
     try {
 
-        const response =
-            await fetch(`${API_URL}/pets`);
+        const response = await fetch(`${API_URL}/pets`);
 
+        if (!response.ok)
+            throw new Error("Error al cargar mascotas");
 
-        const pets =
-            await response.json();
-
+        const pets = await response.json();
 
         petGrid.innerHTML = "";
-
 
         if (pets.length === 0) {
 
@@ -45,7 +36,6 @@ async function fetchPets() {
             return;
         }
 
-
         pets.forEach(pet => {
 
             const photoSrc =
@@ -53,57 +43,48 @@ async function fetchPets() {
                     ? `${API_ROOT}${pet.photoUrl}`
                     : "https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=400&auto=format&fit=crop";
 
+            const card = document.createElement("div");
+            card.className = "pet-card";
 
-            const card =
-                document.createElement("div");
+            card.innerHTML = `
+                <img src="${photoSrc}" class="pet-image">
 
+                <div class="pet-info">
 
-            card.className =
-                "pet-card";
+                    <h3>${pet.name}</h3>
 
+                    <p>
+                        ${pet.species}
+                        • ${pet.breed || "Mestizo"}
+                        • ${pet.age} años
+                    </p>
 
-            card.innerHTML =
-                `
-            <img src="${photoSrc}" class="pet-image">
-
-            <div class="pet-info">
-
-                <h3>${pet.name}</h3>
-
-                <p>
-                    ${pet.species}
-                    • ${pet.breed || "Mestizo"}
-                    • ${pet.age} años
-                </p>
-
-                <span class="badge badge-${pet.status}">
-                    ${pet.status === "available"
+                    <span class="badge badge-${pet.status}">
+                        ${pet.status === "available"
                     ? "Disponible"
                     : pet.status === "pending"
                         ? "En espera"
                         : "Adoptado"
                 }
-                </span>
+                    </span>
 
-                <div class="pet-footer">
+                    <div class="pet-footer">
 
-                    ${pet.status === "available"
-                    ?
-                    `<button onclick="requestAdoption(${pet.id},'${pet.name}')">
-                            Adoptar 🐾
-                        </button>`
+                        ${pet.status === "available"
+                    ? `<button onclick="requestAdoption(${pet.id},'${pet.name}')">
+                                    Adoptar 🐾
+                               </button>`
                     : ""
                 }
 
-                    <button onclick="location.href='pet-form.html?id=${pet.id}'">
-                        Detalles
-                    </button>
+                        <button onclick="location.href='pet-form.html?id=${pet.id}'">
+                            Detalles
+                        </button>
+
+                    </div>
 
                 </div>
-
-            </div>
             `;
-
 
             petGrid.appendChild(card);
 
@@ -113,6 +94,7 @@ async function fetchPets() {
     catch (error) {
 
         console.error(error);
+        alert("Error al cargar mascotas");
 
     }
 
@@ -123,27 +105,23 @@ async function fetchPets() {
 // eliminar
 let petToDelete = null;
 
-const modal =
-    document.getElementById("deleteModal");
-
+const modal = document.getElementById("deleteModal");
 
 window.deletePet = (id) => {
 
     petToDelete = id;
-
     modal.style.display = "flex";
 
 };
 
 
-document
-    .getElementById("confirmDelete")
-    .onclick = async () => {
+document.getElementById("confirmDelete").onclick = async () => {
 
-        if (!petToDelete) return;
+    if (!petToDelete) return;
 
+    try {
 
-        await fetch(`${API_URL}/pets/${petToDelete}`, {
+        const response = await fetch(`${API_URL}/pets/${petToDelete}`, {
 
             method: "DELETE",
 
@@ -153,12 +131,17 @@ document
 
         });
 
+        if (!response.ok)
+            throw new Error();
 
         modal.style.display = "none";
-
         fetchPets();
 
-    };
+    } catch {
+        alert("Error al eliminar");
+    }
+
+};
 
 
 
@@ -168,7 +151,6 @@ document
     .addEventListener("click", () => {
 
         localStorage.clear();
-
         window.location.href = "login.html";
 
     });
@@ -178,9 +160,7 @@ document
 // adopción
 let petToAdopt = null;
 
-const adoptModal =
-    document.getElementById("adoptModal");
-
+const adoptModal = document.getElementById("adoptModal");
 
 window.requestAdoption = (id, name) => {
 
@@ -194,53 +174,43 @@ window.requestAdoption = (id, name) => {
 };
 
 
-document
-    .getElementById("adoptForm")
-    .onsubmit = async (e) => {
+document.getElementById("adoptForm").onsubmit = async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
 
+    const message = document.getElementById("adoptMessage").value;
 
-        const message =
-            document.getElementById("adoptMessage").value;
+    try {
 
+        const response = await fetch(`${API_URL}/adoptions`, {
 
-        const response =
-            await fetch(`${API_URL}/adoptions`, {
+            method: "POST",
 
-                method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
 
-                headers: {
+            body: JSON.stringify({
+                petId: petToAdopt,
+                message
+            })
 
-                    "Content-Type": "application/json",
+        });
 
-                    Authorization: `Bearer ${token}`
+        if (!response.ok)
+            throw new Error();
 
-                },
+        alert("Solicitud enviada 🐾");
 
-                body: JSON.stringify({
+        adoptModal.style.display = "none";
+        fetchPets();
 
-                    petId: petToAdopt,
+    } catch {
+        alert("Error al enviar solicitud");
+    }
 
-                    message
-
-                })
-
-            });
-
-
-        if (response.ok) {
-
-            alert("Solicitud enviada 🐾");
-
-            adoptModal.style.display = "none";
-
-            fetchPets();
-
-        }
-
-    };
-
+};
 
 
 // iniciar
