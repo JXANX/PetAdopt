@@ -37,6 +37,9 @@ const startServer = async () => {
         await sequelize.authenticate();
         console.log('✔ Conexión con PostgreSQL establecida correctamente.');
 
+        await sequelize.sync({ alter: true });
+        console.log('✔ Tablas sincronizadas correctamente.');
+
         app.listen(PORT, () => {
             console.log(`🚀 Servidor listo y corriendo en http://localhost:${PORT}`);
             console.log('CORS habilitado para todas las peticiones.');
