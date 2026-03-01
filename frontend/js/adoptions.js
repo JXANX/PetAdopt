@@ -12,6 +12,10 @@ const API_URL = CONFIG.API_URL;
 const adoptionTable = document.getElementById("adoptionTableBody");
 
 
+// almacenar cambios pendientes
+let pendingChanges = [];
+
+
 // cargar solicitudes
 async function fetchAdoptions() {
 
@@ -50,7 +54,7 @@ async function fetchAdoptions() {
             row.innerHTML = `
                 <td>${adoption.pet?.name || "—"}</td>
                 <td>${adoption.user?.username || "—"}</td>
-                <td>${adoption.message || "Sin mensaje"}</td>
+                <td>${new Date(adoption.createdAt).toLocaleDateString()}</td>
                 <td>${adoption.status}</td>
                 <td>
                     ${adoption.status === "pending" ? `
@@ -80,38 +84,63 @@ async function fetchAdoptions() {
 
 
 
-// aprobar / rechazar
-window.processAdoption = async (id, status) => {
+// marcar aprobación o rechazo (NO envía todavía)
+window.processAdoption = (id, status) => {
 
-    try {
+    const existing = pendingChanges.find(a => a.id === id);
 
-        const response = await fetch(`${API_URL}/adoptions/${id}`, {
-
-            method: "PUT",
-
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-
-            body: JSON.stringify({ status })
-
-        });
-
-        if (!response.ok)
-            throw new Error("Error al procesar");
-
-        fetchAdoptions();
-
-    }
-    catch (error) {
-
-        console.error(error);
-        alert("Error al procesar solicitud");
-
+    if (existing) {
+        existing.status = status;
+    } else {
+        pendingChanges.push({ id, status });
     }
 
+    alert("Cambio marcado. Pulsa 'Procesar Cambios' para guardar.");
 };
+
+
+
+// botón procesar cambios (BATCH)
+document.getElementById("batchProcessBtn")
+    .addEventListener("click", async () => {
+
+        if (pendingChanges.length === 0) {
+            alert("No hay cambios pendientes.");
+            return;
+        }
+
+        try {
+
+            const response = await fetch(`${API_URL}/adoptions/batch`, {
+
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+
+                body: JSON.stringify(pendingChanges)
+
+            });
+
+            if (!response.ok)
+                throw new Error();
+
+            alert("Solicitudes procesadas correctamente ✅");
+
+            pendingChanges = [];
+            fetchAdoptions();
+
+        }
+        catch (error) {
+
+            console.error(error);
+            alert("Error al procesar solicitudes");
+
+        }
+
+    });
 
 
 
