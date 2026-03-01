@@ -9,7 +9,7 @@ if (!token)
 const API_URL = CONFIG.API_URL;
 
 
-const adoptionTable = document.getElementById("adoptionTable");
+const adoptionTable = document.getElementById("adoptionTableBody");
 
 
 // cargar solicitudes
