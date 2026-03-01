@@ -112,16 +112,14 @@ document.getElementById("batchProcessBtn")
         try {
 
             const response = await fetch(`${API_URL}/adoptions/batch`, {
-
                 method: "PUT",
-
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-
-                body: JSON.stringify(pendingChanges)
-
+                body: JSON.stringify({
+                    requests: pendingChanges
+                })
             });
 
             if (!response.ok)
