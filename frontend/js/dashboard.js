@@ -5,39 +5,75 @@ if (!token) {
     window.location.href = 'login.html';
 }
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.clear();
-    window.location.href = 'login.html';
-});
+// logout
+document.getElementById('logoutBtn')
+    .addEventListener('click', () => {
 
+        localStorage.clear();
+
+        window.location.href = 'login.html';
+
+    });
+
+// mensaje bienvenida
 if (username) {
-    document.getElementById('welcomeTitle').textContent = `¡Bienvenido, ${username}! 🐾`;
+
+    document.getElementById('welcomeTitle')
+        .textContent = `¡Bienvenido, ${username}! 🐾`;
+
 }
 
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3001/api'
-    : '/api';
 
+// usar config.js
+const API_URL = API_BASE;
+
+
+// cargar estadísticas
 async function fetchStats() {
+
     try {
-        // Ejemplo de Promise.all en el frontend para cargar datos si hubiera varios endpoints
-        // Aquí solo tenemos uno de stats, pero sirve para demostrar el patrón
-        const statsResponse = await fetch(`${API_URL}/pets/statistics`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
 
-        if (!statsResponse.ok) throw new Error('Failed to fetch stats');
+        const response =
+            await fetch(`${API_URL}/pets/statistics`, {
 
-        const stats = await statsResponse.json();
+                headers: {
 
-        document.getElementById('stat-total').textContent = stats.total;
-        document.getElementById('stat-available').textContent = stats.available;
-        document.getElementById('stat-adopted').textContent = stats.adopted;
-        document.getElementById('stat-pending').textContent = stats.pending;
+                    'Authorization': `Bearer ${token}`
 
-    } catch (error) {
-        console.error('Error:', error);
+                }
+
+            });
+
+
+        if (!response.ok)
+            throw new Error("Error");
+
+
+        const stats =
+            await response.json();
+
+
+        document.getElementById('stat-total')
+            .textContent = stats.total;
+
+        document.getElementById('stat-available')
+            .textContent = stats.available;
+
+        document.getElementById('stat-adopted')
+            .textContent = stats.adopted;
+
+        document.getElementById('stat-pending')
+            .textContent = stats.pending;
+
     }
+    catch (error) {
+
+        console.error(error);
+
+    }
+
 }
 
+
+// iniciar
 fetchStats();
